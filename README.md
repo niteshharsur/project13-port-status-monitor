@@ -1,69 +1,73 @@
-# Project 13: Port Status Monitoring Tool using SDN
+# POX
 
-## Objective
-To monitor switch port UP/DOWN status using Mininet and POX controller.
+POX is a networking software platform written in Python.
 
-## Tools Used
-- Ubuntu WSL
-- Mininet
-- Open vSwitch
-- POX Controller
+POX started life as an OpenFlow controller, but can now also function as an
+OpenFlow switch, and can be useful for writing networking software in
+general.  It currently supports OpenFlow 1.0 and includes special support
+for the Open vSwitch/Nicira extensions.
 
-## Topology
-- 1 Switch
-- 3 Hosts
+POX versions are named.  Starting with POX "gar", POX officially requires
+Python 3.  The last version with support for Python 2 was POX "fangtooth".
+POX should run under Linux, Mac OS, and Windows.  (And just about anywhere
+else -- we've run it on Android phones, under FreeBSD, Haiku, and elsewhere.
+All you need is Python!)  Some features are not available on all platforms.
+Linux is the most featureful.
 
-## Commands Used
+This README contains some information to get you started, but is purposely
+brief.  For more information, please see the full documentation.
 
-### Start Controller
-python3 pox.py forwarding.l2_learning
 
-### Start Mininet
-sudo mn --topo single,3 --controller remote,ip=127.0.0.1,port=6633
+## Running POX
 
-### Test Connectivity
-pingall
+`pox.py` boots up POX. It takes a list of component names on the command line,
+locates the components, calls their `launch()` function (if it exists), and
+then transitions to the "up" state.
 
-### Port Down
-link s1 h1 down
-sh ovs-ofctl show s1
+If you run `./pox.py`, it will attempt to find an appropriate Python 3
+interpreter itself.  In particular, if there is a copy of PyPy in the main
+POX directory, it will use that (for a potentially large performance boost!).
+Otherwise it will look for things called `python3` and fall back to `python`.
+You can also, of course, invoke the desired Python interpreter manually
+(e.g., `python3 pox.py`).
 
-### Port Up
-link s1 h1 up
-sh ovs-ofctl show s1
+The POX commandline optionally starts with POX's own options (see below).
+This is followed by the name of a POX component, which may be followed by
+options for that component.  This may be followed by further components
+and their options.
 
-## Results
-- Connectivity successful
-- Port down detected
-- Port up restored
+  ./pox.py [pox-options...] [component] [component-options...] ...
 
-## Conclusion
-Successfully implemented port status monitoring in SDN.# Project 13: Port Status Monitoring Tool using SDN
+### POX Options
 
-## Objective
-To monitor and detect switch port status changes (UP/DOWN) in a Software Defined Network using Mininet and POX controller.
+While components' options are up to the component (see the component's
+documentation), as mentioned above, POX has some options of its own.
+Some useful ones are:
 
----
+ | Option        | Meaning                                                   |
+ | ------------- | --------------------------------------------------------- |
+ |`--verbose`    | print stack traces for initialization exceptions          |
+ |`--no-openflow`| don't start the openflow module automatically             |
 
-## Tools Used
-- Ubuntu WSL
-- Mininet
-- Open vSwitch
-- POX Controller
-- OpenFlow Protocol
 
----
+## Components
 
-## Topology Used
-- 1 Switch (s1)
-- 3 Hosts (h1, h2, h3)
+POX components are basically Python modules with a few POX-specific
+conventions.  They are looked for everywhere that Python normally looks, plus
+the `pox` and `ext` directories.  Thus, you can do the following:
 
----
+  ./pox.py forwarding.l2_learning
 
-## Steps to Run
+As mentioned above, you can pass options to the components by specifying
+options after the component name.  These are passed to the corresponding
+module's `launch()` funcion.  For example, if you want to run POX as an
+OpenFlow controller and control address or port it uses, you can pass those
+as options to the openflow._01 component:
 
-### Start POX Controller
+  ./pox.py openflow.of_01 --address=10.1.1.1 --port=6634
 
-```bash
-cd ~/pox
-python3 pox.py forwarding.l2_learning
+
+## Further Documentation
+
+The full POX documentation is available on GitHub at
+https://noxrepo.github.io/pox-doc/html/
