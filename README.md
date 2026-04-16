@@ -1,49 +1,7 @@
 # Project 13: Port Status Monitoring Tool using SDN
 
 ## Objective
-To monitor switch port UP/DOWN status using Mininet and POX controller.
-
-## Tools Used
-- Ubuntu WSL
-- Mininet
-- Open vSwitch
-- POX Controller
-
-## Topology
-- 1 Switch
-- 3 Hosts
-
-## Commands Used
-
-### Start Controller
-python3 pox.py forwarding.l2_learning
-
-### Start Mininet
-sudo mn --topo single,3 --controller remote,ip=127.0.0.1,port=6633
-
-### Test Connectivity
-pingall
-
-### Port Down
-link s1 h1 down
-sh ovs-ofctl show s1
-
-### Port Up
-link s1 h1 up
-sh ovs-ofctl show s1
-
-## Results
-- Connectivity successful
-- Port down detected
-- Port up restored
-
-## Conclusion
-Successfully implemented port status monitoring in SDN.# Project 13: Port Status Monitoring Tool using SDN
-
-## Objective
-To monitor and detect switch port status changes (UP/DOWN) in a Software Defined Network using Mininet and POX controller.
-
----
+To monitor and detect switch port UP/DOWN status changes using Mininet and POX controller.
 
 ## Tools Used
 - Ubuntu WSL
@@ -52,18 +10,39 @@ To monitor and detect switch port status changes (UP/DOWN) in a Software Defined
 - POX Controller
 - OpenFlow Protocol
 
----
-
-## Topology Used
+## Topology
 - 1 Switch (s1)
 - 3 Hosts (h1, h2, h3)
 
----
+## Commands Used
 
-## Steps to Run
+### Start Controller
 
-### Start POX Controller
+cd ~/pox  
+python3 pox.py openflow.of_01 forwarding.l2_learning port_monitor
 
-```bash
-cd ~/pox
-python3 pox.py forwarding.l2_learning
+### Start Mininet
+
+sudo mn --topo single,3 --controller remote,ip=127.0.0.1,port=6633
+
+### Test Connectivity
+
+pingall
+
+### Simulate Port Down
+
+link s1 h1 down
+
+### Restore Port
+
+link s1 h1 up
+
+## Results
+- Connectivity successful
+- Port down detected automatically
+- Alert generated when port goes down
+- Port up restored successfully
+- Current port status displayed
+
+## Conclusion
+Successfully implemented port status monitoring in SDN using Mininet and custom POX controller.
